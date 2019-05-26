@@ -1,0 +1,29 @@
+{
+  "name": "web-scraping-articles",
+  "version": "1.0.0",
+  "description": "web scrapping news articles",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xmkchen/web-scraping-articles.git"
+  },
+  "keywords": [
+    "webscraping"
+  ],
+  "author": "kathy chen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xmkchen/web-scraping-articles/issues"
+  },
+  "homepage": "https://github.com/xmkchen/web-scraping-articles#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.3",
+    "express": "^4.17.0",
+    "express-handlebars": "^3.1.0",
+    "mongoose": "^5.5.11"
+  }
+}
