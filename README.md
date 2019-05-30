@@ -1,7 +1,7 @@
 # web-scraping-articles
 Create a web app that lets users view and leave comments on the latest news. Scrape news from another site using Mongoose and Cheerio.
 
-For this assignment, I will be attempting to web scrape blogs and articles from blogTO (https://www.blogto.com/)
+For this assignment, I will be attempting to web scrape blogs and articles from Futurism (https://futurism.com/the-byte)
 
 What the app should do:
 ```
