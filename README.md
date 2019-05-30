@@ -1,7 +1,7 @@
-# web-scraping-articles
+# web-scraping-job-postings
 Create a web app that lets users view and leave comments on the latest news. Scrape news from another site using Mongoose and Cheerio.
 
-For this assignment, I will be attempting to web scrape job postings from Linkedin!
+For this assignment, I will be attempting to web scrape [job postings from Linkedin! Specifically "Software Developers" in "Toronto, CA"](https://www.linkedin.com/jobs/search?keywords=Software%20Developer&location=Toronto%2C%20Ontario%2C%20Canada&trk=guest_job_search_jobs-search-bar_search-submit&redirect=false&position=1&pageNum=0)
 
 What the app should do:
 ```
