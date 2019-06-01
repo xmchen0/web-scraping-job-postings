@@ -13,14 +13,20 @@ var ArticleSchema = new Schema({
         required: false
     },
 
+    // `title` is required and of type String
+    location: {
+        type: String,
+        required: false
+    },
+
     // `link` is required and of type String
-    link: {
+    date: {
         type: String,
         required: false
     },
 
     // `summary` is required and of type String
-    summary: {
+    link: {
         type: String,
         required: false
     },
