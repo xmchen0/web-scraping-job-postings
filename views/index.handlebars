@@ -2,29 +2,33 @@
 |* INDEX PAGE *|
 \*------------}}
 
-<div class="col-md-12">
-    {{#if article}} {{#each article}}
-    <div class="card">
-        <div class="card-header">
-            <h4>{{this.title}}</h4>
+<div class="container">
+    <div class="col-md-12">
+        {{#if article}}
+        {{#each article}}
+        <div class="card">
+            <div class="card-header">
+                <h4>{{this.title}}</h4>
+            </div>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            {{!-- <p> {{this.date}}</p>
-            <p> {{this.location}}</p> --}}
-            <a href={{this.link}} target="_blank">Apply to job</a>
-            <br>
-            <br>
-            <button type="button" class="btn btn-success save" data-id={{this._id}}>Save</button>
+        <div class="card">
+            <div class="card-body">
+                <p>{{this.date}}</p>
+                <p>{{this.company}}</p>
+                <p>{{this.location}}</p>
+                <a href={{this.link}} target="_blank">Apply to job</a>
+                <br><br>
+                <button type="button" class="btn btn-success save" data-id={{this._id}}>Save</button>
+            </div>
         </div>
-    </div>
-    {{/each}} {{else}}
-    <div class="card">
-        <div class="card-body">
-            <h4>We couldn't retrieve any new job postings at this time. Please press Scrape to try again.</h4>
-            <i>Expect some delay after pressing Scrape 3 - 4 times. Thanks for your patience!</i>
+        {{/each}}
+        {{else}}
+        <div class="card">
+            <div class="card-body">
+                <h4>We couldn't retrieve any new job postings at this time. Please press Scrape to try again.</h4>
+                <i>Expect some delay after pressing Scrape 3 - 4 times. Thanks for your patience!</i>
+            </div>
         </div>
+        {{/if}}
     </div>
-    {{/if}}
 </div>

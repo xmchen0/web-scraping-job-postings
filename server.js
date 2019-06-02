@@ -104,15 +104,16 @@ app.get("/scrape", function (req, res) {
     var $ = cheerio.load(response.data);
 
     // Now, we grab every job-result-card within a <li> tag, and do the following:
-    $("li.job-result-card").each(function (i, element) {
+    $(".result-card__contents").each(function (i, element) {
 
       // Save an empty result object
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).find("h3").text();
-      // result.location = $(this).find("span.job-result-card__location").text();
-      // result.date = $(this).find("time.job-result-card__listdate").attr("datetime");
+      result.company = $(this).find("a").text();
+      result.location = $(this).find("span.job-result-card__location").text();
+      result.date = $(this).find("time.job-result-card__listdate").attr("datetime");
       result.link = $(this).find("a").attr("href");
 
       // Create a new Article using the `result` object built from scraping

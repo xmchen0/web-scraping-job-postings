@@ -11,16 +11,21 @@ var ArticleSchema = new Schema({
     type: String,
     required: true
   },
+  // `company` is required and of type String
+  company: {
+    type: String,
+    required: true
+  },
   // `location` is required and of type String
-  // location: {
-  //   type: String,
-  //   required: true
-  // },
+  location: {
+    type: String,
+    required: true
+  },
   // `date` is required and of type String
-  // date: {
-  //   type: String,
-  //   required: true
-  // },
+  date: {
+    type: String,
+    required: true
+  },
   // `link` is required and of type String
   link: {
     type: String,
