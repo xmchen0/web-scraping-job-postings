@@ -1,12 +1,32 @@
-<div id="wrapper">
-    <h1>Job Search</h1>
-    <h2><i>Find your next software developer job!</i></h2>
-    <h5>Scraped from Linkedin Jobs.</h5>
-
-    <form action="/scrape">
-        <input class='btn btn-dark' type="submit" value='Scrape Jobs'>
-    </form>
-
-    <div id="jobs"></div>
-    <div id="comments"></div>
-</div>
+{{#if jobs}}
+  {{#each jobs}}
+    <div class="card border-secondary mb-2">
+      <div class="card-body">
+        <h5 class="card-title">{{headline}}</h5>
+        <p class="card-text">
+          {{summary}}
+          <a href="{{link}}" target="_blank" class="ml-2" style="color: white">Linkedin</a>
+        </p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">
+          <a href="/comment/{{_id}}">
+            <button type="button" class="btn btn-info float-right ml-1" style="font-size: 0.9em">
+              Comment <span class="badge badge-light">{{comments.length}}</span>
+            </button>
+          </a>
+          <button type="button" class="btn btn-danger float-right mr-1 delete-jobs" jobs-id="{{_id}}" style="font-size: 0.9em">Delete</button>
+        </small>
+      </div>
+    </div>
+  {{/each}}
+{{else}}
+  <div class="mb-5">
+    <h4>
+      Sorry, no jobs loaded.
+      <a class="btn btn-warning" href="/scrape" role="button" onClick="window.location.reload();">
+      Try again
+      </a>
+    </h4>
+  </div>
+{{/if}}

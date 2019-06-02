@@ -1,0 +1,56 @@
+{{#if jobs}}
+<div class="card border-primary mb-2">
+    <div class="card-body">
+        <h5 class="card-title">{{jobs.headline}}</h5>
+        <img class="card-img-top float-left mr-3" src="{{jobs.imageURL}}" alt="no image available"
+            style="width: 20vw; float: left">
+        <p class="card-text">
+            {{jobs.summary}}
+            <a href="{{jobs.link}}" target="_blank" class="ml-2">Linkedin</a>
+        </p>
+    </div>
+</div>
+
+{{#each jobs.comments}}
+<div class="card border-secondary mb-2">
+    <div class="card-body">
+        <h5 class="card-title">{{this.title}}</h5>
+        <p class="card-text">
+            {{this.body}}
+        </p>
+    </div>
+    <div class="card-footer">
+        <small class="text-muted">
+            <button class="btn-info float-right ml-1 delete-comment" comment-id="{{this._id}}">Delete</button>
+        </small>
+    </div>
+</div>
+{{/each}}
+
+<div class="card card-body border-primary mt-3" id="post-comment">
+    <h3>Post Comment</h3>
+    <form action="/comment/{{jobs._id}}" method="POST">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control" name="title" placeholder="anonymous">
+        </div>
+        <div class="form-group">
+            <label for="comment">Comment</label>
+            <textarea class="form-control" name="comment" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+{{else}}
+
+<div class="mb-5">
+    <h4>
+        Sorry, something went wrong...
+        <a class="btn btn-warning" href="/" role="button">
+            Back to Home
+        </a>
+    </h4>
+</div>
+
+{{/if}}
