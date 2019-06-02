@@ -29,7 +29,6 @@ app.engine("handlebars", exphbs({
 }));
 app.set("view engine", "handlebars");
 
-
 // Mongo with Mongoose
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
 mongoose.Promise = Promise;
@@ -89,7 +88,6 @@ app.get("/scrape", function (req, res) {
   });
 });
 
-
 // Save an article
 app.post("/articles/save/:id", function (req, res) {
   // Use the article id to find and update its saved boolean
@@ -127,7 +125,6 @@ app.post("/notes/save/:id", function (req, res) {
       res.json(err);
     });
 });
-
 
 // Delete an article
 app.get("/clear", function (req, res) {
