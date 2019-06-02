@@ -1,72 +1,66 @@
-*{
-    color:rgb(32, 27, 27);
+* {
+    color: rgb(32, 27, 27);
 }
 
-#mainnav{
-
+#mainnav {
     box-shadow: 2px 2px 8px 2px rgba(92, 92, 97, 0.2);
     text-shadow: 1px 1px 3px rgba(63, 63, 66, 0.671);
     margin: 10px;
 }
-.card{
+
+.card {
     margin-bottom: 10px;
-    
 }
 
-.card-body{
+.card-body {
     padding: 10px;
     box-shadow: 3px 3px 5px 1px rgba(92, 92, 97, 0.2);
     text-shadow: 1px 1px 2px rgba(63, 63, 66, 0.397);
     font-size: 20px;
 }
 
-.card-header{
+.card-header {
     background-color: rgb(216, 218, 221);
-    box-shadow: 3px 3px 5px 1px rgba(92, 92, 97, 0.2);   
+    box-shadow: 3px 3px 5px 1px rgba(92, 92, 97, 0.2);
     text-shadow: 1px 1px 3px rgba(63, 63, 66, 0.582);
 }
 
-.btn{
+.btn {
     box-shadow: 3px 3px 4px 1px rgba(67, 67, 71, 0.438);
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(63, 63, 66, 0.671);
 }
 
-#noteText{
-    box-shadow: 3px 3px 5px 1px rgba(92, 92, 97, 0.2); 
+#noteText {
+    box-shadow: 3px 3px 5px 1px rgba(92, 92, 97, 0.2);
 }
 
-.modal-header{
+.modal-header {
     background-color: rgb(237, 237, 241);
     text-shadow: 1px 1px 3px rgba(63, 63, 66, 0.589);
-    box-shadow: 3px 3px 5px 1px rgba(88, 88, 92, 0.2); 
+    box-shadow: 3px 3px 5px 1px rgba(88, 88, 92, 0.2);
 }
 
-H1{
+h1 {
     text-shadow: 2px 2px 15px rgba(30, 30, 31, 0.87);
-    font-size: 60px !important ;
-   font-weight: bold;
-}
-
-#clear{
- margin-left: 10px;
+    font-size: 60px !important;
+    font-weight: bold;
 }
 
 @media (max-width: 780px) {
     .jumbotron {
-         height: 200px;
-       }
-
-       .card-body{
-           font-size: 16px;
-       }
-       H4{
-           font-size: 18px;
-       }
-     }
+        height: 200px;
+    }
+    .card-body {
+        font-size: 16px;
+    }
+    h4 {
+        font-size: 18px;
+    }
+}
 
 @media (max-width: 980px) {
-      jumbotron {
-             height: 250px;
-        }
-     }
+    .jumbotron {
+        height: 250px;
+    }
+}

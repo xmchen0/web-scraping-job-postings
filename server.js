@@ -1,88 +1,114 @@
-// Dependencies
+/*---------------------*\
+|* Import Dependencies *|
+\*---------------------*/
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
+const exphbs = require("express-handlebars");
+
+// Our scraping tools
+// Axios is a promised-based http library, similar to jQuery's Ajax method
+// It works on the client and on the server
+const axios = require("axios");
+const cheerio = require("cheerio");
+
+// Require all models
+const db = require("./models");
+
+const port = process.env.PORT || 3000
+
+// Initialize Express
 const app = express();
 
-app.use(express.static("./public"));
+/*-------------------*\
+|* Config Middleware *|
+\*-------------------*/
 
-
-// var Article = require("./models/Article.js");
-var db = require("./models");
-
-// Scraping tools
-var axios = require("axios");
-var cheerio = require("cheerio");
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Parse request body as JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+// Make public a static folder
+app.use(express.static("./public"));
 
-mongoose.Promise = Promise;
-
-//Port
-var port = process.env.PORT || 3000
-
-
-
-// Morgan and body parser
-app.use(logger("dev"));
-
-
-// Set Handlebars.
-var exphbs = require("express-handlebars");
-
+// Set handlebars
 app.engine("handlebars", exphbs({
   defaultLayout: "main",
   partialsDir: path.join(__dirname, "/views/layouts/partials")
 }));
 app.set("view engine", "handlebars");
 
+/*---------*\
+|* MongoDB *|
+\*---------*/
 
-// Mongo with Mongoose
+// Connect to the Mongo DB
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
 mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);
 
 
-//GET request to show Handlebars pages
+/*--------*\
+|* Routes *|
+\*--------*/
+
+// A GET Route for retireving and load data on index page
 app.get("/", function (req, res) {
+  // Find all unsaved articles in Article collection
   db.Article.find({ "saved": false }, function (error, data) {
+    // Assign data found to variable
     var hbJson = {
       article: data
     };
     console.log(hbJson);
+    // Display data response in index page
     res.render("index", hbJson);
   });
 });
 
+// A GET route to saved articles and load data on saved page
 app.get("/saved", function (req, res) {
+  // Find all saved articles in Article collection and populate to note
   db.Article.find({ "saved": true }).populate("note").exec(function (error, articles) {
+    // Assign data found to variable
     var hbJson2 = {
       article: articles
     };
     console.log(articles);
+    // Display data response in saved page
     res.render("saved", hbJson2);
   });
 });
 
-// A GET route for scraping TAV website
+// A GET route for scraping LINKEDIN website
 app.get("/scrape", function (req, res) {
-  // First, we grab the body of the html with request
+
+  // First, we grab the body of the html with axios
   axios.get("https://www.linkedin.com/jobs/search?keywords=Software%20Developer&location=Toronto%2C%20Ontario%2C%20Canada&trk=guest_job_search_jobs-search-bar_search-submit&redirect=false&position=1&pageNum=0").then(function (response) {
 
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
+    // Now, we grab every job-result-card within a <li> tag, and do the following:
     $("li.job-result-card").each(function (i, element) {
 
+      // Save an empty result object
       var result = {};
+
+      // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).find("h3").text();
       result.location = $(this).find("span.job-result-card__location").text();
       result.date = $(this).find("time.job-result-card__listdate").attr("datetime");
       result.link = $(this).find("a").attr("href");
-      
+
+      // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function (dbArticle) {
+          // View the added result in the console
           console.log(dbArticle);
         })
         .catch(function (err) {
@@ -96,8 +122,7 @@ app.get("/scrape", function (req, res) {
   });
 });
 
-
-// Save an article
+// A POST route to save an article
 app.post("/articles/save/:id", function (req, res) {
   // Use the article id to find and update its saved boolean
   db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
@@ -114,20 +139,20 @@ app.post("/articles/save/:id", function (req, res) {
     });
 });
 
-
-// Create a new note
-// Route for saving/updating an Article's associated Note
+// A POST route for saving/updating an Article's associated Note
 app.post("/notes/save/:id", function (req, res) {
-  console.log("body: " + req.body)
-  console.log("Id: " + req.params.id)
+  // console.log("body: " + req.body)
+  // console.log("Id: " + req.params.id)
   // Create a new note and pass the req.body to the entry
   db.Note.create(req.body)
     .then(function (dbNote) {
-
+      // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
+      // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
+      // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
       return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
     })
     .then(function (dbnote) {
-      // Update an Article,
+      // If we were able to successfully update an Article, send it back to the client
       res.json(dbnote);
     })
     .catch(function (err) {
@@ -136,8 +161,7 @@ app.post("/notes/save/:id", function (req, res) {
     });
 });
 
-
-// Delete an article
+// A GET route to delete articles on index page
 app.get("/clear", function (req, res) {
   // Use the article id to find and update its saved boolean
   db.Article.remove({ "saved": false })
@@ -154,19 +178,19 @@ app.get("/clear", function (req, res) {
     });
 });
 
-// Delete a note
+// A GET route to delete a saved note
 app.get("/notes/delete/:id", function (req, res) {
   // Use the note id to find and delete it
   db.Note.findOneAndRemove({ "_id": req.params.id }).then(function (response) {
+    // Redirected
     res.redirect("/saved")
   }).catch(function (err) {
+    // Or send error to client
     res.json(err)
-  })
+  });
+});
 
-})
-
-
-// Delete an article
+// A POST route to delete a saved article
 app.post("/articles/delete/:id", function (req, res) {
   // Use the article id to find and update its saved boolean
   db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": false, "notes": [] })
@@ -184,7 +208,11 @@ app.post("/articles/delete/:id", function (req, res) {
 });
 
 
-// Listen on port
+/*--------*\
+|* Server *|
+\*--------*/
+
+// Start the server
 app.listen(port, function () {
   console.log("App running on port " + port);
 });
