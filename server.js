@@ -10,11 +10,6 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-app.listen(process.env.PORT || 3000, function () {
-    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-});
-
-
 // Initialize Express
 var app = express();
 
@@ -29,6 +24,10 @@ app.use(express.static("public"));
 // Set up handlebars, change extention name to hbs
 app.engine("handlebars", exphbs({ defaultLayout: "main", extname: '.handlebars' }));
 app.set("view engine", "handlebars");
+
+app.listen(process.env.PORT || 3000, function () {
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
 
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
@@ -131,6 +130,6 @@ app.post("/jobs/:id", function (req, res) {
 });
 
 // Start the server
-app.listen(PORT, function () {
-    console.log("App running on port " + PORT + "!");
-});
+// app.listen(PORT, function () {
+//     console.log("App running on port " + PORT + "!");
+// });
