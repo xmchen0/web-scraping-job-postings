@@ -30,8 +30,29 @@ app.listen(process.env.PORT || 3000, function () {
 });
 
 // Connect to the Mongo DB
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/linkedinjobs";
-mongoose.connect(MONGODB_URI);
+mongoose.Promise = Promise;
+if(process.env.MONGODB_URI) {
+    mongoose.connect(process.env.MONGODB_URI, {
+        useMongoClient: true
+    });
+}
+else {
+    mongoose.connect("mongodb://localhost/linkedinjobs", {
+        useMongoClient: true
+    });
+}
+
+// Start the server
+mongoose.connection.on('error', function(err) {
+    console.log("Mongoose Error: " + err);
+})
+
+mongoose.connection.on('open', function() {
+    console.log("Mongoose connection successful.");
+    app.listen(PORT, function() {
+        console.log("App running on port " + PORT + "!");
+    });
+});
 
 // Routes
 
