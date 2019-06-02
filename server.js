@@ -31,7 +31,7 @@ app.set("view engine", "handlebars");
 
 
 // Mongo with Mongoose
-var MONGODB_URI = process.env.MONGOLAB_CHARCOAL_URI || "mongodb://localhost/linkedinjobs";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
 mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);
 
