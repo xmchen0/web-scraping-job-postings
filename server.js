@@ -1,6 +1,8 @@
 // Dependencies
 var express = require("express");
 var bodyParser = require("body-parser");
+var cookieParser = require('cookie-parser');
+var timeout = require('connect-timeout');
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var path = require("path");
@@ -13,8 +15,19 @@ var db = require("./models");
 // Scraping tools
 var axios = require("axios");
 var cheerio = require("cheerio");
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use(timeout('5s'))
+app.use(bodyParser())
+app.use(haltOnTimedout)
+app.use(cookieParser())
+app.use(haltOnTimedout)
+
+function haltOnTimedout (req, res, next) {
+  if (!req.timedout) next()
+}
 
 // Morgan and body parser
 app.use(logger("dev"));
@@ -45,7 +58,9 @@ app.get("/", function (req, res) {
 });
 
 app.get("/saved", function (req, res) {
-  db.Article.find({ "saved": true }).populate("note").exec(function (error, articles) {
+  db.Article.find({ "saved": true })
+  .populate("note")
+  .exec(function (error, articles) {
     var hbJson2 = {
       article: articles
     };
@@ -54,7 +69,7 @@ app.get("/saved", function (req, res) {
   });
 });
 
-// A GET route for scraping TAV website
+// A GET route for scraping Linkedin website
 app.get("/scrape", function (req, res) {
   // First, we grab the body of the html with request
   axios.get("https://www.linkedin.com/jobs/search?keywords=Software%20Developer&location=Toronto%2C%20Ontario%2C%20Canada&trk=guest_job_search_jobs-search-bar_search-submit&redirect=false&position=1&pageNum=0").then(function (response) {
