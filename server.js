@@ -8,6 +8,8 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
 const exphbs = require("express-handlebars");
+const DelayedResponse = require('http-delayed-response');
+const verySlowFunction = require('http-delayed-response');
 
 // Our scraping tools
 // Axios is a promised-based http library, similar to jQuery's Ajax method
@@ -34,6 +36,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // Make public a static folder
 app.use(express.static("./public"));
+
+app.post('/submit', (req, res, next) => {
+  function slowfunction() {
+    return submitController(req, res, next);
+  }
+  const delayed = new DelayedResponse(req, res, next);
+  slowfunction(delayed.start(20 * 1000, 20 * 1000));
+});
 
 // Set handlebars
 app.engine("handlebars", exphbs({
