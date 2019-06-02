@@ -26,8 +26,7 @@ app.engine("handlebars", exphbs({ defaultLayout: "main", extname: '.handlebars' 
 app.set("view engine", "handlebars");
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/linkedinjobs", { useNewUrlParser: true });
-
+var databaseUri = "mongodb://localhost/linkedinjobs";
 if (process.env.MONGODB_URI) {
     mongoose.connect(process.env.MONGODB_URI);
 }
