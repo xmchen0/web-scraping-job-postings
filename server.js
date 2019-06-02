@@ -25,14 +25,11 @@ app.use(express.static("public"));
 app.engine("handlebars", exphbs({ defaultLayout: "main", extname: '.handlebars' }));
 app.set("view engine", "handlebars");
 
-// Connect to the Mongo DB
-var databaseUri = "mongodb://localhost/linkedinjobs";
-if (process.env.MONGODB_URI) {
-    mongoose.connect(process.env.MONGODB_URI);
-}
-else {
-    mongoose.connect(databaseUri);
-}
+// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
+
+mongoose.connect(MONGODB_URI);
+
 
 // Routes
 
