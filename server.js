@@ -25,34 +25,8 @@ app.use(express.static("public"));
 app.engine("handlebars", exphbs({ defaultLayout: "main", extname: '.handlebars' }));
 app.set("view engine", "handlebars");
 
-app.listen(process.env.PORT || 3000, function () {
-    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
-});
-
 // Connect to the Mongo DB
-mongoose.Promise = Promise;
-if(process.env.MONGODB_URI) {
-    mongoose.connect(process.env.MONGODB_URI, {
-        useMongoClient: true
-    });
-}
-else {
-    mongoose.connect("mongodb://localhost/linkedinjobs", {
-        useMongoClient: true
-    });
-}
-
-// Start the server
-mongoose.connection.on('error', function(err) {
-    console.log("Mongoose Error: " + err);
-})
-
-mongoose.connection.on('open', function() {
-    console.log("Mongoose connection successful.");
-    app.listen(PORT, function() {
-        console.log("App running on port " + PORT + "!");
-    });
-});
+mongoose.connect("mongodb://localhost/linkedinjobs", { useNewUrlParser: true });
 
 // Routes
 
@@ -152,6 +126,6 @@ app.post("/jobs/:id", function (req, res) {
 });
 
 // Start the server
-// app.listen(PORT, function () {
-//     console.log("App running on port " + PORT + "!");
-// });
+app.listen(process.env.PORT || 3000, function () {
+    console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
