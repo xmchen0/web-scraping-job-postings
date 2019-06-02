@@ -5,7 +5,6 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 var path = require("path");
 var app = express();
-
 app.use(express.static("./public"));
 
 // var Article = require("./models/Article.js");
@@ -16,7 +15,7 @@ var axios = require("axios");
 var cheerio = require("cheerio");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.set('port', (process.env.PORT || 5000));
+
 
 // Morgan and body parser
 app.use(logger("dev"));
@@ -30,9 +29,10 @@ app.engine("handlebars", exphbs({
 }));
 app.set("view engine", "handlebars");
 
-// Mongo with Mongoose
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
 
+// Mongo with Mongoose
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
+mongoose.Promise = Promise;
 mongoose.connect(MONGODB_URI);
 
 //GET request to show Handlebars pages
@@ -89,6 +89,7 @@ app.get("/scrape", function (req, res) {
   });
 });
 
+
 // Save an article
 app.post("/articles/save/:id", function (req, res) {
   // Use the article id to find and update its saved boolean
@@ -126,6 +127,7 @@ app.post("/notes/save/:id", function (req, res) {
       res.json(err);
     });
 });
+
 
 // Delete an article
 app.get("/clear", function (req, res) {
@@ -173,7 +175,7 @@ app.post("/articles/delete/:id", function (req, res) {
     });
 });
 
-// Start node server
-app.listen(app.get('port'), function () {
-  console.log('Node server is running on port ' + app.get('port'));
+// Start the server
+app.listen(process.env.PORT || 3000, function () {
+  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
 });
