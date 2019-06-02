@@ -16,7 +16,6 @@ var cheerio = require("cheerio");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
 // Morgan and body parser
 app.use(logger("dev"));
 
@@ -28,7 +27,6 @@ app.engine("handlebars", exphbs({
   partialsDir: path.join(__dirname, "/views/layouts/partials")
 }));
 app.set("view engine", "handlebars");
-
 
 // Mongo with Mongoose
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
@@ -88,7 +86,6 @@ app.get("/scrape", function (req, res) {
     res.send("Scrape Complete!");
   });
 });
-
 
 // Save an article
 app.post("/articles/save/:id", function (req, res) {
@@ -156,7 +153,6 @@ app.get("/notes/delete/:id", function (req, res) {
   })
 
 })
-
 
 // Delete an article
 app.post("/articles/delete/:id", function (req, res) {
