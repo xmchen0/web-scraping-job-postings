@@ -5,14 +5,14 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 var path = require("path");
 var app = express();
-var axios = require("axios");
+
 app.use(express.static("./public"));
 
 // var Article = require("./models/Article.js");
 var db = require("./models");
 
 // Scraping tools
-var request = require("request");
+var axios = require("axios");
 var cheerio = require("cheerio");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
