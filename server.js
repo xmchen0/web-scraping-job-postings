@@ -42,7 +42,7 @@ app.post('/scrape', (req, res, next) => {
     return submitController(req, res, next);
   }
   const delayed = new DelayedResponse(req, res, next);
-  slowfunction(delayed.start(10 * 1000, 20 * 1000));
+  slowfunction(delayed.start(10 * 500, 20 * 1000));
 });
 
 // Set handlebars
@@ -111,8 +111,8 @@ app.get("/scrape", function (req, res) {
 
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).find("h3").text();
-      result.location = $(this).find("span.job-result-card__location").text();
-      result.date = $(this).find("time.job-result-card__listdate").attr("datetime");
+      // result.location = $(this).find("span.job-result-card__location").text();
+      // result.date = $(this).find("time.job-result-card__listdate").attr("datetime");
       result.link = $(this).find("a").attr("href");
 
       // Create a new Article using the `result` object built from scraping
