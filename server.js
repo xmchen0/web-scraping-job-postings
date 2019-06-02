@@ -1,7 +1,6 @@
 // Dependencies
 var express = require("express");
 var bodyParser = require("body-parser");
-var cookieParser = require('cookie-parser');
 var timeout = require('connect-timeout');
 var logger = require("morgan");
 var mongoose = require("mongoose");
@@ -19,15 +18,24 @@ var cheerio = require("cheerio");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(timeout('5s'))
-app.use(bodyParser())
-app.use(haltOnTimedout)
-app.use(cookieParser())
-app.use(haltOnTimedout)
+app.post('/save', timeout('5s'), bodyParser.json(), haltOnTimedout, function (req, res, next) {
+  savePost(req.body, function (err, id) {
+    if (err) return next(err)
+    if (req.timedout) return
+    res.send('saved as id ' + id)
+  })
+})
 
-function haltOnTimedout (req, res, next) {
+function haltOnTimedout(req, res, next) {
   if (!req.timedout) next()
 }
+
+function savePost(post, cb) {
+  setTimeout(function () {
+    cb(null, ((Math.random() * 40000) >>> 0))
+  }, (Math.random() * 7000) >>> 0)
+}
+
 
 // Morgan and body parser
 app.use(logger("dev"));
@@ -59,14 +67,14 @@ app.get("/", function (req, res) {
 
 app.get("/saved", function (req, res) {
   db.Article.find({ "saved": true })
-  .populate("note")
-  .exec(function (error, articles) {
-    var hbJson2 = {
-      article: articles
-    };
-    console.log(articles);
-    res.render("saved", hbJson2);
-  });
+    .populate("note")
+    .exec(function (error, articles) {
+      var hbJson2 = {
+        article: articles
+      };
+      console.log(articles);
+      res.render("saved", hbJson2);
+    });
 });
 
 // A GET route for scraping Linkedin website
