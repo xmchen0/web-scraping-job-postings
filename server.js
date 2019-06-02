@@ -28,6 +28,13 @@ app.set("view engine", "handlebars");
 // Connect to the Mongo DB
 mongoose.connect("mongodb://localhost/linkedinjobs", { useNewUrlParser: true });
 
+if (process.env.MONGODB_URI) {
+    mongoose.connect(process.env.MONGODB_URI);
+}
+else {
+    mongoose.connect(databaseUri);
+}
+
 // Routes
 
 // Render index page
