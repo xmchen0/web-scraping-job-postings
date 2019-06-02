@@ -1,0 +1,14 @@
+language: node_js
+node_js:
+- stable
+npm: true
+cache:
+  directories:
+  - node_modules
+deploy:
+  provider: heroku
+  api_key:
+    secure: e3mKERSTsX8OIl293sl6sG3tJtP/r5EkMjXYiIsLOqFC3/qLPqommM5VpAuHk9ZOSLc9hWnl8W0OvbZwxZ84cSmiRuopamqvJjL2y2o5Y7GFEzhw7vK+LTDJgci0Xz6VROMbVJk/JAvdimGUzdp8+mUVoxg3gtDi9QZwudlK+gWcPBEVfQj1GFimjuDbVfI2rx1wfGxh53I7pK14F8vGCgiKjKUP8PE5qI70aeZOw34or1n58J9ZdEyVVgj/pCJ7dp31iguQf6sVAA0oU3EtpCYaagoNF3UX6rmwvHAjcVEjwgPFn3/+vGm0YZslBn43Qyto/sa+XUAdtD7SXYDZMYy8YYR+L+4rLy+pEj0G4Ruv577col4/w4ej9c2vQbMDNgkUiwpbUwFagryZX+HBR0Q8dKy5Y91Ax59lgNSwlUOARtGXsYIX8n5sx0Sjr6PdI+9VEFRtDW8AifZf85PvyP5qwP9QJxyxSY5PHrZ8sNHt1yOgz64PSiBi+A/BQxgh5iMTGIW0pJ9N+tvVkuA1YmvEfcfiU4t38xZkCvXWZu6bwTL28YlTZta6+mfRbTv2b6secCcsk1a3NShLf6XksQ5iXr2og3FN2h26/3/qXxa4RkVOGfXiWk1PMbhOEE+o7l02SNyf6JWV5geg8kwitlNvdYKwUXXALVadjyi/7XE=
+  app: sleepy-lake-64020
+  on:
+    repo: xmkchen/web-scraping-job-postings
