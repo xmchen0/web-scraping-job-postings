@@ -42,7 +42,7 @@ app.post('/scrape', (req, res, next) => {
     return submitController(req, res, next);
   }
   const delayed = new DelayedResponse(req, res, next);
-  slowfunction(delayed.start(20 * 1000, 20 * 1000));
+  slowfunction(delayed.start(10 * 1000, 20 * 1000));
 });
 
 // Set handlebars
