@@ -31,7 +31,7 @@ app.set("view engine", "handlebars");
 
 // Mongo with Mongoose
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
-mongoose.Promise = Promise;
+
 mongoose.connect(MONGODB_URI);
 
 //GET request to show Handlebars pages
