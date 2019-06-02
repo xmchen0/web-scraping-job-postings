@@ -30,6 +30,7 @@ app.listen(process.env.PORT || 3000, function () {
 });
 
 // Connect to the Mongo DB
+mongoose.connect(process.env.MONGODB_URI);
 mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
 
 // Routes
