@@ -1,32 +1,24 @@
-{{#if jobs}}
-  {{#each jobs}}
-    <div class="card border-secondary mb-2">
-      <div class="card-body">
-        <h5 class="card-title">{{headline}}</h5>
-        <p class="card-text">
-          {{summary}}
-          <a href="{{link}}" target="_blank" class="ml-2" style="color: white">Linkedin</a>
-        </p>
-      </div>
-      <div class="card-footer">
-        <small class="text-muted">
-          <a href="/comment/{{_id}}">
-            <button type="button" class="btn btn-info float-right ml-1" style="font-size: 0.9em">
-              Comment <span class="badge badge-light">{{comments.length}}</span>
-            </button>
-          </a>
-          <button type="button" class="btn btn-danger float-right mr-1 delete-jobs" jobs-id="{{_id}}" style="font-size: 0.9em">Delete</button>
-        </small>
-      </div>
+<div class="col-md-12">
+    {{#if article}} {{#each article}}
+    <div class="card">
+        <div class="card-header">
+            <h4>{{this.title}}</h4>
+        </div>
     </div>
-  {{/each}}
-{{else}}
-  <div class="mb-5">
-    <h4>
-      Sorry, no jobs loaded.
-      <a class="btn btn-warning" href="/scrape" role="button" onClick="window.location.reload();">
-      Try again
-      </a>
-    </h4>
-  </div>
-{{/if}}
+    <div class="card">
+        <div class="card-body">
+            <p> {{this.title}}</p>
+            <a href={{this.location}} target="_blank">{{this.link}}</a>
+            <br>
+            <br>
+            <button type="button" class="btn btn-success save" data-id={{this._id}}>Save Job</button>
+        </div>
+    </div>
+    {{/each}} {{else}}
+    <div class="card">
+        <div class="card-body">
+            <h4>Looks like we don't have any new jobs. Please press Scrape.</h4>
+        </div>
+    </div>
+    {{/if}}
+</div>

@@ -1,48 +1,185 @@
-// Backend modules
-const express = require("express");
-const exphbs = require('express-handlebars');
-const mongoose = require("mongoose");
+// Dependencies
+var express = require("express");
+var bodyParser = require("body-parser");
+var logger = require("morgan");
+var mongoose = require("mongoose");
+var path = require("path");
+var app = express();
+var axios = require("axios");
+app.use(express.static("./public"));
 
-// Load mongoose database models
-const db = require("./models");
+// var Article = require("./models/Article.js");
+var db = require("./models");
 
-// Server port number
-const PORT = process.env.PORT || 3000;
+// Scraping tools
+var request = require("request");
+var cheerio = require("cheerio");
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-// Load routes
-const index = require("./routes/index");
-const comment = require("./routes/comment");
-const jobs = require("./routes/api/jobs");
+//Port
+var port = process.env.PORT || 3000
 
-// Initialise Express
-const app = express();
+// Morgan and body parser
+app.use(logger("dev"));
 
-// Initialise Handlebars
-app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-app.set('view engine', 'handlebars');
+// Set Handlebars.
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({
+  defaultLayout: "main",
+  partialsDir: path.join(__dirname, "/views/layouts/partials")
+}));
+app.set("view engine", "handlebars");
 
 
-// Configure middleware 
-// Parse request body as JSON
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+// Mongo with Mongoose
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
-// Make public a static folder
-app.use(express.static("public"));
+//GET request to show Handlebars pages
+app.get("/", function (req, res) {
+  db.Article.find({ "saved": false }, function (error, data) {
+    var hbJson = {
+      article: data
+    };
+    console.log(hbJson);
+    res.render("index", hbJson);
+  });
+});
 
-// Setup router middleware
-app.use("/", index);
-app.use("/comment", comment);
-app.use("/api/jobs", jobs);
+app.get("/saved", function (req, res) {
+  db.Article.find({ "saved": true }).populate("note").exec(function (error, articles) {
+    var hbJson2 = {
+      article: articles
+    };
+    console.log(articles);
+    res.render("saved", hbJson2);
+  });
+});
 
-// Connect to the Mongo DB
-mongoose.connect(db.MONGODB_URI, {
-    useNewUrlParser: true,
-    useCreateIndex: true
-}).then(() => console.log(`Connected to MongoDB ${db.MONGODB_URI}`))
-    .catch(err => console.log(err));
+// A GET route for scraping TAV website
+app.get("/scrape", function (req, res) {
+  // First, we grab the body of the html with request
+  axios.get("https://www.linkedin.com/jobs/search?keywords=Software%20Developer&location=Toronto%2C%20Ontario%2C%20Canada&trk=guest_job_search_jobs-search-bar_search-submit&redirect=false&position=1&pageNum=0").then(function (response) {
+    // Then, we load that into cheerio and save it to $ for a shorthand selector
+    var $ = cheerio.load(response.data);
 
-// Start the server
-app.listen(PORT, function () {
-    console.log("App running on port " + PORT + "!");
+    // Now, we grab every h2 within an article tag, and do the following:
+    $("li.job-result-card").each(function (i, element) {
+      // An empty array to save the data that we'll scrape
+      var result = {};
+
+      // console.log(element);
+      result.title = $(this).find("h3").text();
+      result.location = $(this).find("span.job-result-card__location").text();
+      result.date = $(this).find("time.job-result-card__listdate").attr("datetime");
+      result.link = $(this).find("a").attr("href");
+
+      db.Article.create(result)
+        .then(function (dbJobs) {
+          console.log(dbJobs);
+        })
+        .catch(function (err) {
+          // If an error occurred, send it to the client
+          return res.json(err);
+        });
+    });
+
+    // If we were able to successfully scrape and save an Article, send a message to the client
+    res.send("Scrape Complete!");
+  });
+});
+
+
+// Save an article
+app.post("/articles/save/:id", function (req, res) {
+  // Use the article id to find and update its saved boolean
+  db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": true })
+    // Execute the above query
+    .exec(function (err, doc) {
+      // Log any errors
+      if (err) {
+        console.log(err);
+      }
+      else {
+        // Or send the document to the browser
+        res.send(doc);
+      }
+    });
+});
+
+// Create a new note
+// Route for saving/updating an Article's associated Note
+app.post("/notes/save/:id", function (req, res) {
+  console.log("body: " + req.body)
+  console.log("Id: " + req.params.id)
+  // Create a new note and pass the req.body to the entry
+  db.Note.create(req.body)
+    .then(function (dbNote) {
+
+      return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+    })
+    .then(function (dbnote) {
+      // Update an Article,
+      res.json(dbnote);
+    })
+    .catch(function (err) {
+      // If an error occurred, send it to the client
+      res.json(err);
+    });
+});
+
+
+// Delete an article
+app.get("/clear", function (req, res) {
+  // Use the article id to find and update its saved boolean
+  db.Article.remove({ "saved": false })
+    // Execute the above query
+    .exec(function (err, doc) {
+      // Log any errors
+      if (err) {
+        // console.log(err);
+      }
+      else {
+        // Or send the document to the browser
+        res.redirect("/");
+      }
+    });
+});
+
+// Delete a note
+app.get("/notes/delete/:id", function (req, res) {
+  // Use the note id to find and delete it
+  db.Note.findOneAndRemove({ "_id": req.params.id }).then(function (response) {
+    res.redirect("/saved")
+  }).catch(function (err) {
+    res.json(err)
+  })
+
+})
+
+
+// Delete an article
+app.post("/articles/delete/:id", function (req, res) {
+  // Use the article id to find and update its saved boolean
+  db.Article.findOneAndUpdate({ "_id": req.params.id }, { "saved": false, "notes": [] })
+    // Execute the above query
+    .exec(function (err, doc) {
+      // Log any errors
+      if (err) {
+        console.log(err);
+      }
+      else {
+        // Or send the document to the browser
+        res.send(doc);
+      }
+    });
+});
+
+
+// Listen on port
+app.listen(port, function () {
+  console.log("App running on port " + port);
 });
