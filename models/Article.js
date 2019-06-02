@@ -15,7 +15,7 @@ var ArticleSchema = new Schema({
     required: true
   },
   // date
-  location: {
+  date: {
     type: String,
     required: true
   },
