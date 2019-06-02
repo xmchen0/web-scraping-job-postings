@@ -16,6 +16,7 @@ var axios = require("axios");
 var cheerio = require("cheerio");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.set('port', (process.env.PORT || 5000));
 
 // Morgan and body parser
 app.use(logger("dev"));
@@ -172,7 +173,7 @@ app.post("/articles/delete/:id", function (req, res) {
     });
 });
 
-// Start the server
-app.listen(process.env.PORT || 3000, function () {
-  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+// Start node server
+app.listen(app.get('port'), function () {
+  console.log('Node server is running on port ' + app.get('port'));
 });
