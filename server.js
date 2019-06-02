@@ -1,7 +1,6 @@
 // Dependencies
 var express = require("express");
 var bodyParser = require("body-parser");
-var timeout = require('connect-timeout');
 var logger = require("morgan");
 var mongoose = require("mongoose");
 var path = require("path");
@@ -17,25 +16,6 @@ var cheerio = require("cheerio");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-app.post('/save', timeout('5s'), bodyParser.json(), haltOnTimedout, function (req, res, next) {
-  savePost(req.body, function (err, id) {
-    if (err) return next(err)
-    if (req.timedout) return
-    res.send('saved as id ' + id)
-  })
-})
-
-function haltOnTimedout(req, res, next) {
-  if (!req.timedout) next()
-}
-
-function savePost(post, cb) {
-  setTimeout(function () {
-    cb(null, ((Math.random() * 40000) >>> 0))
-  }, (Math.random() * 7000) >>> 0)
-}
-
 
 // Morgan and body parser
 app.use(logger("dev"));
