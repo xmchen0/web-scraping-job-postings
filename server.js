@@ -1,56 +1,54 @@
-// Using the tools and techniques you learned so far,
-// you will scrape a website of your choice, then place the data
-// in a MongoDB database. Be sure to make the database and collection
-// before running this exercise.
-
-// Consult the assignment files from earlier in class
-// if you need a refresher on Cheerio.
-
 // Dependencies
 var express = require("express");
-var mongojs = require("mongojs");
+var exphbs = require('express-handlebars');
+var logger = require("morgan");
+var mongoose = require("mongoose");
 // Require axios and cheerio. This makes the scraping possible
 var axios = require("axios");
 var cheerio = require("cheerio");
 
+// Require all models
+var db = require("./models");
+
+var PORT = 3000;
+
 // Initialize Express
 var app = express();
 
-// Database configuration
-var databaseUrl = "linkedinjobs";
-var collections = ["jobs"];
+// Use morgan logger for logging requests
+app.use(logger("dev"));
+// Parse request body as JSON
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+// Make public a static folder
+app.use(express.static("public"));
 
-// Hook mongojs configuration to the db variable
-var db = mongojs(databaseUrl, collections);
-db.on("error", function (error) {
-    console.log("Database Error:", error);
-});
+// Set up handlebars, change extention name to hbs
+app.engine("handlebars", exphbs({ defaultLayout: "main", extname: '.handlebars' }));
+app.set("view engine", "handlebars");
 
-// Main route (simple Hello World Message)
-app.get("/", function (req, res) {
-    res.send("Hello world");
-});
+// Connect to the Mongo DB
+mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
 
 // Routes
 
-// Main route (simple Hello World Message)
-app.get("/", function (req, res) {
-    res.send("Hello world");
+// Render index page
+app.get('/', (req, res) => {
+    res.render('index')
 });
 
-// Retrieve data from the db
-app.get("/all", function (req, res) {
-    // Query: In our database, go to the animals collection, then "find" everything
-    db.jobs.find({}, function (error, found) {
-        // Log any errors if the server encounters one
-        if (error) {
-            console.log(error);
-        }
-        // Otherwise, send the result of this query to the browser
-        else {
-            res.json(found);
-        }
-    });
+// Route for getting all Jobs from the db
+app.get("/jobs", function (req, res) {
+    // Grab every document in the Jobs collection
+    db.Jobs.find({})
+        .then(function (dbJobs) {
+            // If we were able to successfully find Jobss, send them back to the client
+            res.json(dbJobs);
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
 });
 
 // Scrape data from one site and place it into the mongodb db
@@ -62,47 +60,28 @@ app.get("/scrape", function (req, res) {
         // '$' becomes a shorthand for cheerio's selector commands, much like jQuery's '$'
         var $ = cheerio.load(response.data);
 
-        // An empty array to save the data that we'll scrape
-        var results = [];
-
         // Select each element in the HTML body from which you want information.
         // NOTE: Cheerio selectors function similarly to jQuery's selectors,
         // but be sure to visit the package's npm page to see how it works
         $("li.job-result-card").each(function (i, element) {
-            console.log(element);
-            var title = $(element).find("h3").text();
-            var location = $(element).find("span.job-result-card__location").text();
-            var date = $(element).find("time.job-result-card__listdate").attr("datetime");
-            var link = $(element).find("a").attr("href");
+            // console.log(element);
+            // Save an empty result object
+            var result = {};
+            result.title = $(this).find("h3").text();
+            result.location = $(this).find("span.job-result-card__location").text();
+            result.date = $(this).find("time.job-result-card__listdate").attr("datetime");
+            result.link = $(this).find("a").attr("href");
 
-            // Save these results in an object that we'll push into the results array we defined earlier
-            // results.push({
-            //     title: title,
-            //     location: location,
-            //     date: date,
-            //     link: link
-            // });
-
-            // If this found element had both a title and a link
-            if (title && location && date && link) {
-                // Insert the data in the scrapedData db
-                db.jobs.insert({
-                    title: title,
-                    location: location,
-                    date: date,
-                    link: link
-                },
-                    function (err, inserted) {
-                        if (err) {
-                            // Log the error if one is encountered during the query
-                            console.log(err);
-                        }
-                        else {
-                            // Otherwise, log the inserted data
-                            console.log(inserted);
-                        }
-                    });
-            }
+            // Create a new Jobs using the `result` object built from scraping
+            db.Jobs.create(result)
+                .then(function (dbJobs) {
+                    // View the added result in the console
+                    console.log(dbJobs);
+                })
+                .catch(function (err) {
+                    // If an error occurred, log it
+                    console.log(err);
+                });
         });
     });
     // Send a "Scrape Complete" message to the browser
@@ -112,7 +91,43 @@ app.get("/scrape", function (req, res) {
     // console.log(results);
 });
 
-// Listen on port 3000
-app.listen(3000, function () {
-    console.log("App running on port 3000!");
+// Route for grabbing a specific Jobs by id, populate it with it's note
+app.get("/jobs/:id", function (req, res) {
+    // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
+    db.Jobs.findOne({ _id: req.params.id })
+        // ..and populate all of the notes associated with it
+        .populate("comment")
+        .then(function (dbJobs) {
+            // If we were able to successfully find an Jobs with the given id, send it back to the client
+            res.json(dbJobs);
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
+});
+
+// Route for saving/updating an Jobs's associated Note
+app.post("/jobs/:id", function (req, res) {
+    // Create a new note and pass the req.body to the entry
+    db.Note.create(req.body)
+        .then(function (dbNote) {
+            // If a Note was created successfully, find one Jobs with an `_id` equal to `req.params.id`. Update the Jobs to be associated with the new Note
+            // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
+            // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
+            return db.Jobs.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+        })
+        .then(function (dbJobs) {
+            // If we were able to successfully update an Jobs, send it back to the client
+            res.json(dbJobs);
+        })
+        .catch(function (err) {
+            // If an error occurred, send it to the client
+            res.json(err);
+        });
+});
+
+// Start the server
+app.listen(PORT, function () {
+    console.log("App running on port " + PORT + "!");
 });
