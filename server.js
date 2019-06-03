@@ -19,7 +19,7 @@ const cheerio = require("cheerio");
 // Require all models
 const db = require("./models");
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 8080
 
 // Initialize Express
 const app = express();
@@ -59,7 +59,7 @@ app.set("view engine", "handlebars");
 // Connect to the Mongo DB
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/linkedinjobs";
 mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 
 /*--------*\
