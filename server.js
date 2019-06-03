@@ -77,7 +77,7 @@ app.get("/", function (req, res) {
     console.log(hbJson);
     // Display data response in index page
     res.render("index", hbJson);
-  }, 1500);
+  });
 });
 
 // A GET route to saved articles and load data on saved page
@@ -98,7 +98,7 @@ app.get("/saved", function (req, res) {
 app.get("/scrape", function (req, res) {
 
   // First, we grab the body of the html with axios
-  axios.get("https://ca.linkedin.com/jobs/search?keywords=Full-stack%20Developer&location=Toronto%2C%20Ontario%2C%20Canada&trk=guest_job_search_jobs-search-bar_search-submit&redirect=false&position=1&pageNum=0&f_TP=1").then(function (response) {
+  axios.get("https://ca.linkedin.com/jobs/search?keywords=Full-stack%20Developer&location=Toronto%2C%20Ontario%2C%20Canada&redirect=false&position=1&pageNum=0&f_TP=1%2C2").then(function (response) {
 
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
