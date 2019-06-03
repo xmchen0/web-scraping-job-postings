@@ -77,7 +77,7 @@ app.get("/", function (req, res) {
     console.log(hbJson);
     // Display data response in index page
     res.render("index", hbJson);
-  }, 15000);
+  }, 1500);
 });
 
 // A GET route to saved articles and load data on saved page
