@@ -98,20 +98,20 @@ app.get("/saved", function (req, res) {
 app.get("/scrape", function (req, res) {
 
   // First, we grab the body of the html with axios
-  axios.get("https://www.linkedin.com/jobs/search?keywords=Software%20Developer&location=Toronto%2C%20Ontario%2C%20Canada&trk=guest_job_search_jobs-search-bar_search-submit&redirect=false&position=1&pageNum=0").then(function (response) {
+  axios.get("https://ca.linkedin.com/jobs/search?keywords=Full-stack%20Developer&location=Toronto%2C%20Ontario%2C%20Canada&trk=guest_job_search_jobs-search-bar_search-submit&redirect=false&position=1&pageNum=0").then(function (response) {
 
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
     // Now, we grab every job-result-card within a <li> tag, and do the following:
-    $(".result-card__contents").each(function (i, element) {
+    $("li.job-result-card").each(function (i, element) {
 
       // Save an empty result object
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).find("h3").text();
-      result.company = $(this).find("a").text();
+      result.company = $(this).find("h4").text();
       result.location = $(this).find("span.job-result-card__location").text();
       result.date = $(this).find("time.job-result-card__listdate").attr("datetime");
       result.link = $(this).find("a").attr("href");
