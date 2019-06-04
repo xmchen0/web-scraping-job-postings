@@ -17,7 +17,7 @@ const db = require("../models");
 // A GET Route for retireving and load data on index page
 routers.get("/", function (req, res) {
     // Find all unsaved articles in Article collection
-    db.Article.find({ "saved": false }, function (error, data) {
+    db.Article.find({}, function (error, data) {
         // Assign data found to variable
         var hbJson = {
             article: data
