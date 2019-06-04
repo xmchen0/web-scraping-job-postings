@@ -26,6 +26,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 // Make public a static folder
 app.use(express.static("./public"));
+// Set handlebars
+app.engine("handlebars", exphbs({
+  defaultLayout: "main",
+  partialsDir: path.join(__dirname, "./views/layouts/partials")
+}));
+app.set("view engine", "handlebars");
 
 // Testing http-delayed-response npm
 // app.post('/scrape', (req, res, next) => {
@@ -35,13 +41,6 @@ app.use(express.static("./public"));
 //   const delayed = new DelayedResponse(req, res, next);
 //   slowfunction(delayed.start(10 * 500, 20 * 1000));
 // });
-
-// Set handlebars
-app.engine("handlebars", exphbs({
-  defaultLayout: "main",
-  partialsDir: path.join(__dirname, "./views/layouts/partials")
-}));
-app.set("view engine", "handlebars");
 
 /*--------*\
 |* Routes *|
