@@ -10,15 +10,6 @@ const path = require("path");
 const exphbs = require("express-handlebars");
 // const DelayedResponse = require('http-delayed-response');
 
-// Our scraping tools
-// Axios is a promised-based http library, similar to jQuery's Ajax method
-// It works on the client and on the server
-const axios = require("axios");
-const cheerio = require("cheerio");
-
-// Require all models
-// const db = require("./models");
-
 const port = process.env.PORT || 8080
 
 // Initialize Express
@@ -58,7 +49,6 @@ app.set("view engine", "handlebars");
 
 // Import routes and give the server access to them.
 var routes = require("./routes/routes.js");
-
 app.use(routes);
 
 /*---------*\
