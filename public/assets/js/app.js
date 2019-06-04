@@ -16,12 +16,6 @@ $("#scrape").on("click", function () {
     });
 });
 
-// When nav option is clicked set to active
-$(".navbar-nav li").click(function () {
-    $(".navbar-nav li").removeClass("active");
-    $(this).addClass("active");
-});
-
 // When save button is clicked for Article
 $(".save").on("click", function () {
     // Grab the id associated with the article from the submit button
