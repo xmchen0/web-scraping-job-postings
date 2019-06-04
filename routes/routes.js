@@ -22,7 +22,7 @@ routers.get("/", function (req, res) {
         var hbJson = {
             article: data
         };
-        console.log(hbJson);
+        // console.log(hbJson);
         // Display data response in index page
         res.render("index", hbJson);
     });
