@@ -15,7 +15,6 @@ const cheerio = require("cheerio");
 // Require all models
 const db = require("../models");
 
-
 // A GET Route for retireving and load data on index page
 routers.get("/", function (req, res) {
     // Find all unsaved articles in Article collection
@@ -170,4 +169,4 @@ routers.post("/articles/delete/:id", function (req, res) {
 });
 
 // Export the router model
-module.exports = routers
+module.exports = routers;
