@@ -39,7 +39,7 @@ This is an open letter to confess how I failed spectacularly to get my app worki
   
 ### --- IDEA ---
 
-<i>Following the solved activity 20-Scraping-With-Mongoose posted in GitLab, I revisted the work example to gain an understanding of the file structure and functionality. I setup my file directory in a similar fashion to the solved working activity to minimise confusion and follow the best practice. I chose Linkedin Jobs because I think it would be interesting and practical and useful to further develop in the future when I will be job-hunting.
+Following the solved activity 20-Scraping-With-Mongoose posted in GitLab, I revisted the work example to gain an understanding of the file structure and functionality. I setup my file directory in a similar fashion to the solved working activity to minimise confusion and follow the best practice. I chose Linkedin Jobs because I think it would be interesting and practical and useful to further develop in the future when I will be job-hunting.
 
 ### --- TECHNOLOGIES ---
 
