@@ -23,7 +23,7 @@ URL contains specifics including:
 * Feel free to add more content to your database (photos, bylines, and so on).
 
 ## Link to final assignment:
-https://hello-web-scraper.herokuapp.com/
+https://hello-jobs.herokuapp.com/
 
 
 # * * *
@@ -79,7 +79,7 @@ My second thought was there was something wrong with my GET Route for retireving
   
 All my hypothesises were wrong. Turns out this error occurred because when a web request take an excessive amount of time to process by the app, the router will terminate the request if it takes longer than 30 seconds to complete.
   
-Then I thought about creating a new heroku git repo to start fresh. Guess what? It worked like magic. My app finally deployed and I wanted to cry for joy.
+Then I thought about creating a new heroku git repo to start fresh. Guess what? It worked like magic. My app finally deployed!
   
 To avoid the timeout error, the request must be processed in the dyno by your app and a response delivered back to the router within 30 seconds. You can check the request time by double clicking anywhere on the web page and select "inspect" > "networking". Or if you want, try creating a new heroku git repo and re-deploy. Here's how you can do that in your command line:
 
