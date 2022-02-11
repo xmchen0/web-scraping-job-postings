@@ -27,7 +27,7 @@
     "connect-timeout": "^1.9.0",
     "cookie-parser": "^1.4.4",
     "express": "^4.17.0",
-    "express-handlebars": "^3.1.0",
+    "express-handlebars": "^5.3.1",
     "http-delayed-response": "0.0.4",
     "mongojs": "^2.6.0",
     "mongoose": "^5.5.11",
